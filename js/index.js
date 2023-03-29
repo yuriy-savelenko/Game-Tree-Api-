@@ -5,14 +5,6 @@ const container = document.getElementById('container');
 const input = document.getElementById('input');
 const inputValue = input.getAttribute('value');
 
-// let regExp = `${}`
-
-// function compareInputValue(value) {
-//   if (inputValue.match === gameName) {
-//     console.log('ищем')
-//   }
-// }
-
 function getDataFromApi(search, element) {
   const cards__container = document.createElement('div');
   cards__container.classList.add('cards__container');
