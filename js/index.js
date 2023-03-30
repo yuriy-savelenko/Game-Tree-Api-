@@ -34,7 +34,6 @@ form.onsubmit = (event) => {
   if (container.children[1] !== upcommingGroup) {
     container.children[1].remove()
   }
-  // console.log(container.children)
   const cards__container = document.createElement('div');
   cards__container.classList.add('cards__container');
   if (input.value === '') {
