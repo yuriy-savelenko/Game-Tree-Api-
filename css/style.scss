@@ -120,7 +120,6 @@ body {
     font-size: 29px;
     border: none;
     outline: none;
-    width: 25%;
     box-shadow: rgba(121, 32, 90, 0.8) 0px 5px 20px;
     border-radius: 0.5rem;
     padding: 10px;
@@ -189,7 +188,11 @@ body {
     background-position: 65px 0px;
     color: rgb(121, 32, 93);
 }
-
+@media(max-width: 767px){
+    .input{
+        width: 45%;
+    }
+}
 @media(max-width: 450px) {
     .container {
         padding: 0 10px;
