@@ -6,12 +6,11 @@ const container = document.getElementById('container');
 const input = document.getElementById('input');
 const form = document.getElementById('form');
 const infoMainContainer = document.getElementById('info_main_container');
-const infoContainer = document.getElementById('info_container')
-const infoScreenshotsContainer = document.getElementById('info_screenshots_container')
+const infoContainer = document.getElementById('info_container');
+const infoScreenshotsContainer = document.getElementById('info_screenshots_container');
 const infoName = document.getElementById('info_name');
 const infoRating = document.getElementById('info_rating');
 const infoImg = document.getElementById('info_img');
-// const infoScreenshots = document.querySelectorAll('.info_screenshots');
 const apiResponseDataArray = [];
 
 
@@ -50,10 +49,10 @@ form.onsubmit = (event) => {
       searchGroup.classList.remove('hide')))
     .catch((e) => {
       if (e.status === 404) {
-        console.log(e)
+        console.log(e);
       }
     })
-}
+};
 
 function getDataFromApi(search, element) {
   const cardsContainer = document.createElement('div');
@@ -66,7 +65,7 @@ function getDataFromApi(search, element) {
         console.log(e)
       }
     })
-}
+};
 
 getDataFromApi('dates=2023-03-28%2C2024&key=617e338437104212aac41ca5875ec598&ordering=-added&page=2&page_size=10', upcommingGroup);
 getDataFromApi('dates=2022%2C2023-03-28&key=617e338437104212aac41ca5875ec598&ordering=-popularity&page=2&page_size=10', popularGroup);
@@ -83,7 +82,7 @@ function getData(search, element) {
         console.log(e)
       }
     })
-}
+};
 
 container.addEventListener('click', (event) => {
   const target = event.target;
@@ -91,22 +90,13 @@ container.addEventListener('click', (event) => {
     infoMainContainer.classList.remove('hide');
     apiResponseDataArray.forEach((element) => {
       if (+target.dataset.id === element.id) {
-        console.log(element)
         infoContainer.scrollIntoView();
         document.body.style.overflow = 'hidden';
         infoName.textContent = element.name;
         infoRating.textContent = `Rating ${element.rating}`;
-        infoRating.classList.add('info_rating')
+        infoRating.classList.add('info_rating');
         infoImg.src = element.short_screenshots[0].image;
         infoImg.alt = element.name;
-        //  Цикл заполняющий scr у img созданных в html и скрывающий все лишние элементы.
-        // for (let i = 1; i < element.short_screenshots.length; i++) {
-        //   // if (i = element.short_screenshots.length) {
-        //   //   infoScreenshotsContainer.children[i].nextSibling.classList.add('hide');
-        //   // }
-        //   infoScreenshots[i].alt = element.name;
-        //   infoScreenshots[i].src = element.short_screenshots[i].image;
-        // }
         for (let i = 1; i < element.short_screenshots.length; i++) {
           const infoImgLink = document.createElement('a');
           const infoScreenshot = document.createElement('img');
@@ -114,15 +104,12 @@ container.addEventListener('click', (event) => {
           infoScreenshot.alt = element.name;
           infoScreenshot.src = element.short_screenshots[i].image;
           infoImgLink.href = element.short_screenshots[i].image;
-          infoImgLink.append(infoScreenshot)
+          infoImgLink.append(infoScreenshot);
           infoScreenshotsContainer.append(infoImgLink);
         }
-        console.log(apiResponseDataArray)
       }
     })
-  } else {
-    console.log(target)
-  }
+  };
   if (target === infoMainContainer) {
     infoScreenshotsContainer.replaceChildren();
     infoMainContainer.classList.add('hide');
