@@ -13,8 +13,6 @@ const infoRating = document.getElementById('info_rating');
 const infoImg = document.getElementById('info_img');
 const apiResponseDataArray = [];
 
-
-
 const makeContainerWithCards = (result, cardsContainer, element) => {
   apiResponseDataArray.push(result);
   const box = document.createElement('div');
