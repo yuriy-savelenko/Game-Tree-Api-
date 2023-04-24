@@ -51,9 +51,10 @@ form.onsubmit = (event) => {
     .catch((e) => {
       if (e.status === 404) {
         console.log(e);
+        console.log(e);
       }
     })
-}
+};
 
 function getDataFromApi(search, element) {
   const cardsContainer = document.createElement('div');
@@ -68,7 +69,7 @@ function getDataFromApi(search, element) {
         console.log(e)
       }
     })
-}
+};
 
 getDataFromApi('dates=2023-03-28%2C2024&key=617e338437104212aac41ca5875ec598&ordering=-added&page=2&page_size=10', upcommingGroup);
 getDataFromApi('dates=2022%2C2023-03-28&key=617e338437104212aac41ca5875ec598&ordering=-popularity&page=2&page_size=10', popularGroup);
