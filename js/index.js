@@ -5,24 +5,16 @@ const searchGroup = document.getElementById('search-group');
 const container = document.getElementById('container');
 const input = document.getElementById('input');
 const form = document.getElementById('form');
-const infoMainContainer = document.getElementById('info_main_container');
-const infoContainer = document.getElementById('info_container')
-const infoScreenshotsContainer = document.getElementById('info_screenshots_container')
-const infoName = document.getElementById('info_name');
-const infoRating = document.getElementById('info_rating');
-const infoImg = document.getElementById('info_img');
-// const infoScreenshots = document.querySelectorAll('.info_screenshots');
 const apiResponseDataArray = [];
-
-
+let inputLastValue;
 
 const makeContainerWithCards = (result, cardsContainer, element) => {
   apiResponseDataArray.push(result);
   const box = document.createElement('div');
   const link = document.createElement('a');
-  let gameName = document.createElement('p');
-  let gameDate = document.createElement('p');
-  let gameImg = document.createElement('img');
+  const gameName = document.createElement('p');
+  const gameDate = document.createElement('p');
+  const gameImg = document.createElement('img');
   box.classList.add('box');
   link.classList.add('link');
   link.dataset.id = result.id;
@@ -39,18 +31,26 @@ const makeContainerWithCards = (result, cardsContainer, element) => {
 
 form.onsubmit = (event) => {
   event.preventDefault();
+  if (input.value === '') {
+    return;
+  }
+  if (input.value === inputLastValue) {
+    return;
+  }
+  if (searchGroup.nextElementSibling !== upcommingGroup) {
+    searchGroup.nextElementSibling.replaceChildren()
+  }
+  inputLastValue = input.value;
   element = searchGroup;
   const cardsContainer = document.createElement('div');
   cardsContainer.classList.add('cards__container');
-  if (input.value === '') {
-    return;
-  } fetch(`https://api.rawg.io/api/games?key=617e338437104212aac41ca5875ec598&page_size=6&search=${input.value}`)
+  fetch(`https://api.rawg.io/api/games?key=617e338437104212aac41ca5875ec598&page_size=6&search=${input.value}`)
     .then((response) => response.json())
     .then((data) => data.results.forEach((result) => makeContainerWithCards(result, cardsContainer, element),
       searchGroup.classList.remove('hide')))
     .catch((e) => {
       if (e.status === 404) {
-        console.log(e)
+        console.log(e);
       }
     })
 }
@@ -60,7 +60,9 @@ function getDataFromApi(search, element) {
   cardsContainer.classList.add('cards__container');
   fetch(`https://api.rawg.io/api/games?${search}`)
     .then((response) => response.json())
-    .then((data) => data.results.forEach((result) => { makeContainerWithCards(result, cardsContainer, element) }))
+    .then((data) => data.results.forEach((result) => {
+      makeContainerWithCards(result, cardsContainer, element)
+    }))
     .catch((e) => {
       if (e.status === 404) {
         console.log(e)
@@ -72,41 +74,35 @@ getDataFromApi('dates=2023-03-28%2C2024&key=617e338437104212aac41ca5875ec598&ord
 getDataFromApi('dates=2022%2C2023-03-28&key=617e338437104212aac41ca5875ec598&ordering=-popularity&page=2&page_size=10', popularGroup);
 getDataFromApi('dates=2022%2C2023-03-28&key=617e338437104212aac41ca5875ec598&ordering=-released&page=2&page_size=100', newGroup);
 
-function getData(search, element) {
-  const cardsContainer = document.createElement('div');
-  cardsContainer.classList.add('cards__container');
-  fetch(`https://api.rawg.io/api/games?${search}`)
-    .then((response) => response.json())
-    .then((data) => data.results.forEach((result) => { makeContainerWithCards(result, cardsContainer, element) }))
-    .catch((e) => {
-      if (e.status === 404) {
-        console.log(e)
-      }
-    })
-}
-
 container.addEventListener('click', (event) => {
   const target = event.target;
   if (target.classList.contains('link')) {
-    infoMainContainer.classList.remove('hide');
+    const infoMainContainer = document.createElement('div');
+    const infoContainer = document.createElement('div');
+    const infoHeader = document.createElement('div');
+    const infoScreenshotsContainer = document.createElement('div');
+    const infoName = document.createElement('h3');
+    const infoRating = document.createElement('p');
+    const infoImg = document.createElement('img');
+    infoMainContainer.classList.add('info_main_container');
+    infoContainer.classList.add('info_container');
+    infoHeader.classList.add('info_header');
+    infoScreenshotsContainer.classList.add('info_screenshots_container')
+    infoName.classList.add('info_name');
+    infoRating.classList.add('info_rating');
+    infoImg.classList.add('info_img');
     apiResponseDataArray.forEach((element) => {
       if (+target.dataset.id === element.id) {
-        console.log(element)
         infoContainer.scrollIntoView();
         document.body.style.overflow = 'hidden';
         infoName.textContent = element.name;
         infoRating.textContent = `Rating ${element.rating}`;
-        infoRating.classList.add('info_rating')
         infoImg.src = element.short_screenshots[0].image;
         infoImg.alt = element.name;
-        //  Цикл заполняющий scr у img созданных в html и скрывающий все лишние элементы.
-        // for (let i = 1; i < element.short_screenshots.length; i++) {
-        //   // if (i = element.short_screenshots.length) {
-        //   //   infoScreenshotsContainer.children[i].nextSibling.classList.add('hide');
-        //   // }
-        //   infoScreenshots[i].alt = element.name;
-        //   infoScreenshots[i].src = element.short_screenshots[i].image;
-        // }
+        infoHeader.append(infoName, infoRating);
+        infoContainer.append(infoHeader, infoImg, infoScreenshotsContainer);
+        infoMainContainer.append(infoContainer);
+        searchGroup.after(infoMainContainer);
         for (let i = 1; i < element.short_screenshots.length; i++) {
           const infoImgLink = document.createElement('a');
           const infoScreenshot = document.createElement('img');
@@ -114,18 +110,15 @@ container.addEventListener('click', (event) => {
           infoScreenshot.alt = element.name;
           infoScreenshot.src = element.short_screenshots[i].image;
           infoImgLink.href = element.short_screenshots[i].image;
+          infoImgLink.setAttribute('target', '_blank')
           infoImgLink.append(infoScreenshot)
           infoScreenshotsContainer.append(infoImgLink);
         }
-        console.log(apiResponseDataArray)
       }
     })
-  } else {
-    console.log(target)
   }
-  if (target === infoMainContainer) {
-    infoScreenshotsContainer.replaceChildren();
-    infoMainContainer.classList.add('hide');
+  if (target.classList.contains('info_main_container')) {
+    document.querySelector('.info_main_container').remove();
     document.body.style.overflow = 'auto';
   }
 });
